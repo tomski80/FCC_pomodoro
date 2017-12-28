@@ -1,5 +1,6 @@
 body {
     background-color: salmon;
+    font-family: 'Alegreya', serif;
 }
 
 h1 {
@@ -10,10 +11,16 @@ h1 {
 h2 {
     text-align: center;
     margin: 0px 0px 0px;
-    font-size: 28px;
+    font-size: 32px;
     position: relative;
     bottom: -120px;
     color: black;
+}
+
+h5 {
+    font-family: 'Alegreya', serif;
+    font-size: 1.3em;
+    margin: 0;
 }
 
 .container {
@@ -47,18 +54,32 @@ h2 {
 
 .analog {
     
-    width: 300px;
-    height: 300px;
-    margin: 0 auto;
-    border: none;
+  
     stroke: wheat;
     stroke-width: 10px;
     fill: none;
-    transform: rotateY(-180deg) rotateZ(-90deg);
     stroke-dasharray: 754px;
     stroke-dashoffset: 0px;
     animation: countdown 10s linear infinite forwards;
     animation-play-state: paused;
+}
+
+.svg-container {
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+    border: none;
+    transform: rotateZ(-90deg);
+}
+
+.analog-bkg {
+
+    margin: 0 auto;
+    border: none;
+    stroke: rgb(87, 83, 77);
+    stroke-width: 10px;
+    fill: none;
+    transform: rotateY(-180deg) rotateZ(-90deg);
 }
 
 @keyframes countdown {
@@ -66,7 +87,7 @@ h2 {
       stroke-dashoffset: 0px;
     }
     to {
-      stroke-dashoffset: 754px;
+      stroke-dashoffset: -754px;
     }
 }
 
@@ -74,6 +95,17 @@ h2 {
     display: inline;
     background-color: salmon;
     border: 0 none;
+    font-family: 'Alegreya', serif;
+    outline: none;
+}
+
+.btn:hover {
+    color: red;
+    outline: none;
+}
+
+.btn:active {
+    outline: none;
 }
 
 .btn > h1 {

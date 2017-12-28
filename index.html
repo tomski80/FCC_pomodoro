@@ -3,13 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Alegreya" rel="stylesheet">
     <link href='css/styles.css' type='text/css' rel='stylesheet'>
     <title>Pomodoro</title>
 </head>
 <body>
-    <header>
-        <h1>pomodoro timer</h1>
-    </header>
 
     <main>
         <div class='container'>
@@ -31,16 +29,20 @@
             </div>
             
             <div class='timer'>
-                <h2 id='session-title'>session</h2>
+                <h2 id='session-title'>Session</h2>
                 <div>
                     <div>
-                        <svg class='analog'>
+                        <svg class='svg-container'>
+                            <g class='analog'>
                             <circle r="120" cx="150" cy="150"></circle>
+                          <!--  <circle class='analog-bkg' r="120" cx="110" cy="150"></circle>-->
+                            </g>
                         </svg>
+                    
                     </div>
                     <input id='display-timer' type='text' value='empty' readonly='true'>
                     <button class='btn' id='timer-start'>start</button>
-                    <button class='btn' id='timer-stop'>stop</button>
+                    <button class='btn' id='timer-stop'>pause</button>
                 </div>
             </div>
         </div>
