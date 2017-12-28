@@ -1,0 +1,116 @@
+body {
+    background-color: salmon;
+}
+
+h1 {
+    text-align: center;
+    margin: 20px 0px;
+}
+
+h2 {
+    text-align: center;
+    margin: 0px 0px 0px;
+    font-size: 28px;
+    position: relative;
+    bottom: -120px;
+    color: black;
+}
+
+.container {
+    width: 420px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+}
+
+.break {
+    width: 200px;
+    height: 100px;
+    margin: 0;
+    border: none;
+}
+
+.work {
+    width: 200px;
+    margin: 0;
+    border: none;
+}
+
+.timer {
+    width: 400px;
+    margin: 0;
+    border: none;
+
+}
+
+.analog {
+    
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+    border: none;
+    stroke: wheat;
+    stroke-width: 10px;
+    fill: none;
+    transform: rotateY(-180deg) rotateZ(-90deg);
+    stroke-dasharray: 754px;
+    stroke-dashoffset: 0px;
+    animation: countdown 10s linear infinite forwards;
+    animation-play-state: paused;
+}
+
+@keyframes countdown {
+    from {
+      stroke-dashoffset: 0px;
+    }
+    to {
+      stroke-dashoffset: 754px;
+    }
+}
+
+.btn {
+    display: inline;
+    background-color: salmon;
+    border: 0 none;
+}
+
+.btn > h1 {
+    padding: 0;
+    margin: 0;
+    font-size: 32px;
+}
+
+#display-break, #display-work {
+    background-color: salmon;
+    width: 50px;
+    height: 50px;
+    border: none;
+    font-size: 24px;
+    text-align: center;
+    margin: 0;
+    padding: 0 0;
+}
+
+#display-timer {
+    background-color: salmon;
+    width: 100px;
+    height: 50px;
+    border: none;
+    font-size: 40px;
+    text-align: center;
+    display: block;
+    margin: 0 auto;
+    padding: 0 0;
+    position: relative;
+    top: -175px;
+    color: wheat;
+}
+
+#timer-stop, #timer-start {
+    position: relative;
+    top: -60px;
+    margin: 0 20px;
+    font-size: 32px;
+}
