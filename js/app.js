@@ -77,6 +77,7 @@ $(
             let dt = currentTime - startTime,
                 deltaTime = { minutes : Math.floor(dt/1000/60),
                               seconds : Math.floor((dt/1000) % 60),
+                              miliseconds: (dt % 1000),
                               delta   : dt };
             return deltaTime;
         };
