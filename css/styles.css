@@ -140,7 +140,7 @@ h5 {
     color: wheat;
 }
 
-#timer-stop, #timer-start {
+#timer-pause, #timer-start {
     position: relative;
     top: -60px;
     margin: 0 20px;

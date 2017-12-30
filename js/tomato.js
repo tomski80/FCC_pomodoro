@@ -36,6 +36,14 @@ TOMATO.utility._convertToMinSec = function(milisec){
     }
 }
 
+TOMATO.utility._convertToSec = function(milisec){
+    const MILISEC_IN_SEC = 1000;
+    var seconds;
+
+    seconds = milisec / MILISEC_IN_SEC;
+    return seconds;
+}
+
 
 /****************************************
 /* object responsible for tracking time *
@@ -68,8 +76,8 @@ TOMATO.timer = (function() {
         }
     }
 
-    //stop clock and store time left (updated session length)
-    function stop(){
+    //pause clock and store time left (updated session length)
+    function pause(){
         _sessionLength = _sessionLength - _deltaT();
         _startTime = -1;
     }
@@ -87,13 +95,12 @@ TOMATO.timer = (function() {
         var tempTime;
 
         tempTime = _getTime();
-        console.log(tempTime);
         return TOMATO.utility._convertToMinSec(tempTime);
     } 
 
     function reset(sessionLen){
         _title = TOMATO.TITLE_WORK;
-        stop()
+        pause()
         setSessionLength(sessionLen);
     }
 
@@ -107,7 +114,7 @@ TOMATO.timer = (function() {
 
     return {
         start : start,
-        stop : stop,
+        pause : pause,
         reset : reset,
         getMinSecTime : getMinSecTime,
         setSessionLength : setSessionLength,
@@ -117,6 +124,56 @@ TOMATO.timer = (function() {
     }
 })();
 
+/***********************************
+ * object responsible for updating *   
+ * analog (visible circle) timer   *
+ * ********************************/
+TOMATO.analogTimer = (function(){
+    var _animLength = TOMATO.DEFAULT_SESSION_LENGTH;
+
+    function reset(milisec){
+        var analog,
+            timeSec;
+
+        setLength(milisec);
+
+        analog = $('.analog');
+        timeSec = TOMATO.utility._convertToSec(milisec);
+        console.log(timeSec);
+        console.log(_animLength);
+
+        //reset css animation
+        analog.css('animation','none');
+        setTimeout(function(){
+            analog.css('animation','countdown '+timeSec+'s linear infinite forwards');
+            analog.css('animation-play-state', 'paused');
+        },10);
+        
+
+    }
+
+    function start(){
+        $('.analog').css('animation-play-state', 'none');
+        setTimeout(function(){
+        $('.analog').css('animation-play-state', 'running');
+        },10);
+    }
+
+    function pause(){
+        $('.analog').css('animation-play-state', 'paused');
+    }
+    
+    function setLength(time){
+        _animLength = time;
+    }
+
+    return {
+        reset : reset,
+        start : start,
+        pause : pause,
+        setLength : setLength
+    }
+})();
 /*************************************
  *  Session constructor              *
  *  stores session length            * 
@@ -182,13 +239,13 @@ TOMATO.render = function(){
  *  TOMATO APP logic here    *
  ****************************/
 TOMATO.handler = function(){
-    var tempTime,
+    var countdown,
         SessionLen,
         title;
 
     //swap between work or break 
-    tempTime = TOMATO.timer.getMilisecTime();
-    if(tempTime <= 0){
+    countdown = TOMATO.timer.getMilisecTime();
+    if(countdown <= 0){
         if( TOMATO.currentSession === TOMATO.TITLE_WORK ){
             SessionLen = TOMATO.break.getSessionLength();
             title = TOMATO.TITLE_BREAK;
@@ -197,10 +254,12 @@ TOMATO.handler = function(){
             title = TOMATO.TITLE_WORK;
         }
         TOMATO.currentSession = title;
-        TOMATO.timer.stop();
+        TOMATO.timer.pause();
         TOMATO.timer.setSessionLength(SessionLen);
         TOMATO.timer.start();
         TOMATO.timer.setTitle(title);
+        TOMATO.analogTimer.reset(SessionLen);
+        TOMATO.analogTimer.start();
     }
     
     //update screen;
@@ -214,22 +273,25 @@ TOMATO.handleEvents = function(elem){
     var elementId,
         workSessionLen; 
     
-    elementId = $(elem).attr('id');
-
     //little helper function to keep code DRY 
     function resetTimer(){
         workSessionLen = TOMATO.work.getSessionLength();
         TOMATO.timer.reset(workSessionLen);
+        TOMATO.analogTimer.reset(workSessionLen);
     }
 
     // react to click event 
     // choose action depending on button id
+    elementId = $(elem).attr('id');
+    
     switch(elementId){
         case 'timer-start':
             TOMATO.timer.start();
+            TOMATO.analogTimer.start();
             break;
-        case 'timer-stop':
-            TOMATO.timer.stop();
+        case 'timer-pause':
+            TOMATO.timer.pause();
+            TOMATO.analogTimer.pause();
             break;
         case 'break-dec':
             TOMATO.break.decrease();
@@ -257,14 +319,18 @@ TOMATO.handleEvents = function(elem){
 *********************************/
 $(function(){
 
+    //initialize analog clock
+    TOMATO.analogTimer.reset(TOMATO.DEFAULT_SESSION_LENGTH);
+
+    // handler function is responsible for app logic, updates and render
+    // everything that happens internally without user interaction
+    window.setInterval( TOMATO.handler, TOMATO.REFRESH_RATE );
+
     //react to button clicks
     $('.btn').on('click', function(){
         TOMATO.handleEvents(this);
     });
 
-    // handler function is responsible for app logic, updates and render
-    // everything that happens internally without user interaction
-    window.setInterval( TOMATO.handler, TOMATO.REFRESH_RATE );
 });
 
 
