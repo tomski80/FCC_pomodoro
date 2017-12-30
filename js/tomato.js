@@ -11,7 +11,7 @@ var TOMATO = {};
 /*************************************************************
 /* some app scope variables, constants and utility functions *
 **************************************************************/
-TOMATO.REFRESH_RATE = 100;                   //refresh rate for rendering (interval function timeout)
+TOMATO.REFRESH_RATE = 200;                   //refresh rate for rendering (interval function timeout)
 TOMATO.DEFAULT_BREAK_LENGTH = 300000;        //in milisec
 TOMATO.DEFAULT_SESSION_LENGTH = 1800000;     //in milisec  
 TOMATO.DEFAULT_STEP_VALUE = 60000;          //in milisec
@@ -22,17 +22,33 @@ TOMATO.currentSession = TOMATO.TITLE_WORK;         // keep track if counting-dow
 TOMATO.utility = {};                         //container for utility functions (shared functions)
 
 
-TOMATO.utility._convertToMinSec = function(milisec){
+// converts miliseconds to - minutes, seconds, milisecond
+TOMATO.utility._formatTime = function(milisec){
     const MILISEC_IN_SEC = 1000,
               SEC_IN_MIN = 60;
 
-    var tempMin, tempSec;
+    var tempMin,
+        tempSec,
+        tempMilisec,
+        strMin,
+        strSec,
+        strMilisec;
 
     tempMin = Math.floor(milisec / MILISEC_IN_SEC / SEC_IN_MIN);
     tempSec = Math.floor(milisec / MILISEC_IN_SEC % SEC_IN_MIN);
+    tempMilisec = (milisec % MILISEC_IN_SEC);
+
+    strMin = tempMin.toString(10);
+    strSec = tempSec.toString(10);
+    strMilisec = tempMilisec.toString(10);
+
+    strMin = strMin.padStart(2,'0');
+    strSec = strSec.padStart(2,'0');
+    strMilisec = strMilisec.padStart(3,'0');
     return {
-        minutes : tempMin,
-        seconds : tempSec
+        minutes : strMin,
+        seconds : strSec,
+        milisec : strMilisec
     }
 }
 
@@ -91,11 +107,11 @@ TOMATO.timer = (function() {
         return _getTime();
     }
     //get formated time - returns object 
-    function getMinSecTime(){
+    function getFormatedTime(){
         var tempTime;
 
         tempTime = _getTime();
-        return TOMATO.utility._convertToMinSec(tempTime);
+        return TOMATO.utility._formatTime(tempTime);
     } 
 
     function reset(sessionLen){
@@ -116,7 +132,7 @@ TOMATO.timer = (function() {
         start : start,
         pause : pause,
         reset : reset,
-        getMinSecTime : getMinSecTime,
+        getFormatedTime : getFormatedTime,
         setSessionLength : setSessionLength,
         getMilisecTime : getMilisecTime,
         getTitle : getTitle,
@@ -200,8 +216,8 @@ TOMATO.Session = function(sessionLength){
         return _sessionLength;
     }
 
-    this.getMinSecTime = function(){
-        return TOMATO.utility._convertToMinSec(_sessionLength);
+    this.getFormatedTime = function(){
+        return TOMATO.utility._formatTime(_sessionLength);
     }
 };
 
@@ -222,14 +238,15 @@ TOMATO.render = function(){
         workTime,
         breakTime;
     
-    countDown = TOMATO.timer.getMinSecTime();
+    countDown = TOMATO.timer.getFormatedTime();
     $('#display-timer').val(countDown.minutes+':'+countDown.seconds);
+    //$('#display-milisec').val(countDown.milisec);
 
-    breakTime = TOMATO.break.getMinSecTime();
-    $('#display-break').val(breakTime.minutes+':'+breakTime.seconds);
+    breakTime = TOMATO.break.getFormatedTime();
+    $('#display-break').val(breakTime.minutes);
 
-    workTime = TOMATO.work.getMinSecTime();
-    $('#display-work').val(workTime.minutes+':'+workTime.seconds);
+    workTime = TOMATO.work.getFormatedTime();
+    $('#display-work').val(workTime.minutes);
 
     $('#session-title').html(TOMATO.timer.getTitle());
 
@@ -241,7 +258,8 @@ TOMATO.render = function(){
 TOMATO.handler = function(){
     var countdown,
         SessionLen,
-        title;
+        title,
+        alarm;
 
     //swap between work or break 
     countdown = TOMATO.timer.getMilisecTime();
@@ -260,6 +278,9 @@ TOMATO.handler = function(){
         TOMATO.timer.setTitle(title);
         TOMATO.analogTimer.reset(SessionLen);
         TOMATO.analogTimer.start();
+
+        alarm = new Audio('Bike Horn.wav');
+        alarm.play();
     }
     
     //update screen;

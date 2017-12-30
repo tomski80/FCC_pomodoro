@@ -125,6 +125,15 @@ h5 {
     padding: 0 0;
 }
 
+.display-timer {
+    width: 150px;
+    display: flex;
+    position: relative;
+    top: -170px;
+    left: 10px;
+    margin: 0 auto;
+}
+
 #display-timer {
     background-color: salmon;
     width: 100px;
@@ -135,9 +144,22 @@ h5 {
     display: block;
     margin: 0 auto;
     padding: 0 0;
-    position: relative;
-    top: -175px;
     color: wheat;
+}
+
+#display-milisec {
+    background-color: salmon;
+    width: 0px;
+    height: 50px;
+    border: none;
+    font-size: 24px;
+    text-align: center;
+    display: block;
+    margin: 0 auto;
+    padding: 0 0;
+    color: wheat;
+    position: relative;
+    top: 5px;
 }
 
 #timer-pause, #timer-start {
