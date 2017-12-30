@@ -22,6 +22,19 @@ TOMATO.currentSession = TOMATO.TITLE_WORK;         // keep track if counting-dow
 TOMATO.utility = {};                         //container for utility functions (shared functions)
 
 
+TOMATO.utility._padStart = function(len,strToPad,str){
+    var i,
+        strPadded;
+
+    strPadded = strToPad.split('');
+    if(strPadded.length === 1){
+        for(i = 1; i < len; i++){
+            strPadded.unshift(str);
+        }
+    }
+    strPadded = strPadded.join('');
+    return strPadded;
+}
 // converts miliseconds to - minutes, seconds, milisecond
 TOMATO.utility._formatTime = function(milisec){
     const MILISEC_IN_SEC = 1000,
@@ -42,9 +55,15 @@ TOMATO.utility._formatTime = function(milisec){
     strSec = tempSec.toString(10);
     strMilisec = tempMilisec.toString(10);
 
-    strMin = strMin.padStart(2,'0');
-    strSec = strSec.padStart(2,'0');
-    strMilisec = strMilisec.padStart(3,'0');
+    //padStart is ECMA scritp 2017 - beaware of compatibility 
+    //strMin = strMin.padStart(2,'0');
+    //strSec = strSec.padStart(2,'0');
+    //strMilisec = strMilisec.padStart(3,'0');
+
+    //my own padStart function used here for compatibility
+    strMin = TOMATO.utility._padStart(2,strMin,'0');
+    strSec = TOMATO.utility._padStart(2,strSec,'0');
+    strMilisec = TOMATO.utility._padStart(3,strMilisec,'0');
     return {
         minutes : strMin,
         seconds : strSec,
